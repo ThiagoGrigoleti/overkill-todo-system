@@ -26,7 +26,7 @@ public class TaskConsumer {
 
     @RabbitListener(queues = "task.created.queue")
     public void consumeTask(Map<String, String> taskMessage) {
-        log.info("Recebendo tarefa: {}", taskMessage);
+        log.info("recebendo tarefa: {}", taskMessage);
 
         try {
             Thread.sleep(1000);
@@ -38,14 +38,14 @@ public class TaskConsumer {
             entity.setProcessedAt(LocalDateTime.now());
 
             TaskEntity savedTask = taskRepository.save(entity);
-            log.info("Tarefa salva no Banco com ID: {}", savedTask.getId());
+            log.info("tarefa salva no Banco com ID: {}", savedTask.getId());
 
             String redisKey = "task:" + savedTask.getId();
             redisTemplate.opsForValue().set(redisKey, savedTask.getTitle());
-            log.info("Cache atualizado no Redis");
+            log.info("cache atualizado no Redis");
 
         } catch (InterruptedException e) {
-            log.error("Erro no processamento", e);
+            log.error("erro no processamento", e);
             Thread.currentThread().interrupt();
         }
     }

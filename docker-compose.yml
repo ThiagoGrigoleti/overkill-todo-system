@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: todo-postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tododb
+    ports:
+      - "5432:5432"
+    networks:
+      - overkill-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: todo-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - overkill-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: todo-rabbitmq
+    ports:
+      - "5672:5672"   
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - overkill-net
+
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: todo-zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - overkill-net
+
+networks:
+  overkill-net:
+    driver: bridge
